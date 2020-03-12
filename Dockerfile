@@ -9,12 +9,12 @@ ENV GCE_PROXY_VERSION=1.16 \
     GCE_PROXY_SHA256=6e4df1e2b62e41b3c01818f75dd46a99cb0e9d385c3b6237281251e28cb38432
 
 RUN set -e \
-    && wget -q -O /cloud_sql_proxy https://storage.googleapis.com/cloudsql-proxy/v${GCE_PROXY_VERSION}/cloud_sql_proxy.linux.amd64 \
-    && chmod +x /cloud_sql_proxy \
-    && cd / \
+    && wget -q -O /tmp/cloud_sql_proxy https://storage.googleapis.com/cloudsql-proxy/v${GCE_PROXY_VERSION}/cloud_sql_proxy.linux.amd64 \
+    && chmod +x /tmp/cloud_sql_proxy \
+    && cd /tmp \
     && echo "$GCE_PROXY_SHA256 cloud_sql_proxy" | sha256sum -c
 
-FROM gcr.io/distroless/base-debian10:nonroot
+FROM gcr.io/distroless/base
 
 ARG TITLE="gce-proxy"
 ARG DESCRIPTION="Custom image for gce-proxy which includes netcat for livenessProbes."
@@ -44,9 +44,7 @@ LABEL org.opencontainers.image.created="$CREATED" \
       org.label-schema.name="$TITLE" \
       org.label-schema.description="$DESCRIPTION"
 
-COPY --from=build --chown=nonroot /bin/nc /bin/nc
+COPY --from=build /bin/nc /bin/nc
 
 # Add to / to keep in-line with upstream image
-COPY --from=build --chown=nonroot /cloud_sql_proxy /cloud_sql_proxy
-
-USER nonroot
+COPY --from=build /tmp/cloud_sql_proxy /cloud_sql_proxy
