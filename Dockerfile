@@ -18,7 +18,7 @@ FROM gcr.io/distroless/base
 
 ARG TITLE="gce-proxy"
 ARG DESCRIPTION="Custom image for gce-proxy which includes netcat for livenessProbes."
-ARG VERSION="0.1.0"
+ARG VERSION="1.16"
 
 ARG VENDOR="Mintel Group Ltd."
 ARG SOURCE="https://github.com/mintel/gce-proxy"
@@ -39,7 +39,7 @@ LABEL org.opencontainers.image.created="$CREATED" \
       org.label-schema.build-date="$CREATED" \
       org.label-schema.vcs-url="$SOURCE" \
       org.label-schema.version="$VERSION" \
-      org.label-schema.vcs-ref=$REVISION \
+      org.label-schema.vcs-ref="$REVISION" \
       org.label-schema.vendor="$VENDOR" \
       org.label-schema.name="$TITLE" \
       org.label-schema.description="$DESCRIPTION"
